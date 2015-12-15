@@ -1,4 +1,6 @@
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 
@@ -129,6 +131,16 @@ public class HachageLineaire<T> extends HachageAbstract<T>{
 			}
 			System.out.println("]");
 		}
+	}
+	
+	@Override
+	public List<T> toList() {
+		List<T> list = new ArrayList<T>();
+		for(int i = 0; i < valeurs.size(); i++) {
+			if(valeurs.get(i) != null)
+				list.add(valeurs.get(i));
+		}
+		return list;
 	}
 
 }

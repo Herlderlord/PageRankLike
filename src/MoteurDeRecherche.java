@@ -4,27 +4,88 @@ import java.util.List;
 
 public class MoteurDeRecherche {
 	
-	private HachageAbstract<ArrayList<String>> hach;
 	
+	
+	private HachageAbstract<ArrayList<PageOccurence>> hach;
+	
+	/**
+	 * 
+	 */
 	public MoteurDeRecherche() {
-		hach = new HachageDouble<ArrayList<String>>(300000);
+		hach = new HachageDouble<ArrayList<PageOccurence>>(300000);
 	}
 	
-	public MoteurDeRecherche(HachageAbstract<ArrayList<String>> hach) {
+	/**
+	 * 
+	 * @param hach
+	 */
+	public MoteurDeRecherche(HachageAbstract<ArrayList<PageOccurence>> hach) {
 		this.hach = hach;
 	}
 	
-	public List<String> search(String keyword) {
+	/**
+	 * 
+	 * @param keyword
+	 * @return
+	 */
+	public List<PageOccurence> search(String keyword) {
 		return hach.get(keyword);
 	}
 	
-	public List<String> search(String[] keywords) {
+	/**
+	 * 
+	 * @param keywords
+	 * @return
+	 */
+	public List<PageOccurence> search(String[] keywords) {
+		
+		ArrayList<PageOccurence> pagesOccurences = new ArrayList<PageOccurence>();
+		
+		HachageDouble<PageOccurence> hachageCounter = new HachageDouble<PageOccurence>(300000);
+		
+		// Résultat final. 
+		List<PageOccurence> result = new ArrayList<PageOccurence>();
+		
+		// On parcourt les mots clefs que l'utilisateur a donné.
+		for(int i = 0; i < keywords.length; i++) {
+			pagesOccurences = hach.get(keywords[i]); 
+			
+			// On vérifie si on a des occurences avec le mot clef 
+			if(pagesOccurences != null) {
+				// Ajout des occurences dans un hachage pour compter.
+				for(int j = 0; j < pagesOccurences.size(); j++) {
+					PageOccurence p = hachageCounter.get(pagesOccurences.get(j).getUrl());	
+					// Addition des scores
+					if(p != null) {
+						p.setNbOccurence(p.getNbOccurence() + pagesOccurences.get(j).getNbOccurence());
+					}
+					// Ajout de la page 
+					else {
+						hachageCounter.add(pagesOccurences.get(j).getUrl(), new PageOccurence(pagesOccurences.get(j).getNbOccurence(), pagesOccurences.get(j).getUrl()));
+						result.add(hachageCounter.get(pagesOccurences.get(j).getUrl()));
+					}
+				}
+			}
+
+			
+		}
+		
+		// Et on fait l'union des deux. 
+		return result;
+	}
+	
+	public List<PageOccurence> searchEngine(String request) {
 		return null;
 	}
 	
-	public HachageAbstract<ArrayList<String>> getHach() {
+	/**
+	 * 
+	 * @return
+	 */
+	public HachageAbstract<ArrayList<PageOccurence>> getHach() {
 		return hach;
 	}
 
 	
 }
+

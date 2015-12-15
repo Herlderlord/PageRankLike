@@ -1,5 +1,7 @@
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Vector;
 
 
@@ -141,6 +143,19 @@ public class Hachage<T> extends HachageAbstract<T> {
 		}
 	}
 	
+	@Override
+	public List<T> toList() {
+		List<T> list = new ArrayList<T>();
+		
+		for(int i = 0; i < table.size(); i++) {
+			for(int j = 0; j < table.get(i).size(); j++) {
+				if(table.get(i).get(j) != null) 
+					list.add(table.get(i).get(j));
+			}
+		}
+		
+		return list;
+	}
 	
 
 

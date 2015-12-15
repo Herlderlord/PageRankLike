@@ -1,4 +1,5 @@
 import java.math.BigInteger;
+import java.util.List;
 
 public abstract class HachageAbstract<T> {
 
@@ -156,6 +157,12 @@ public abstract class HachageAbstract<T> {
 	public abstract void afficherTableau();
 	
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public abstract int getSize(); 
 	
+	
+	public abstract List<T> toList();
 }

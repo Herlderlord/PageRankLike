@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -8,11 +7,18 @@ public class App {
 
 		MoteurDeRechercheBuilder builder = new MoteurDeRechercheBuilder();
 		builder.buildMoteurDeRecherche("data/index.txt");
-		List<String> sites = builder.getMoteurDeRecherche().search("twittertwitter");
+		String[] keywords = {"twittertwitter", "abonnersimple", "twittertwitter", "abonnersimple"};
+		List<PageOccurence> sites = builder.getMoteurDeRecherche().search(keywords);
+
+		
+		
 		
 		System.out.println("Liste de sites : " + sites.size());
 		for(int i = 0; i < sites.size(); i++) {
-			System.out.println(sites.get(i));
+			System.out.println("Entity ["); 
+			System.out.println("Url : " + sites.get(i).getUrl()); 
+			System.out.println("NbOccurence : " + sites.get(i).getNbOccurence());
+			System.out.println("]");
 		}
 	}
 	
