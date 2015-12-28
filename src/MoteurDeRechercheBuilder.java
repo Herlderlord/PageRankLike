@@ -20,7 +20,7 @@ public class MoteurDeRechercheBuilder {
 	}
 	
 	public void buildMoteurDeRecherche(String indexFileName, String newFileName) {
-		this.buildIndex(indexFileName);
+		//this.buildIndex(indexFileName);
 		this.buildNew(newFileName);
 	}
 	
@@ -72,6 +72,42 @@ public class MoteurDeRechercheBuilder {
 	
 	private void buildNew(String filename) {
 		System.out.println("[BUILD NEW] En cours de construction");
+		
+/*
+		HachageAbstract<ArrayList<PageOccurence>> hach = moteur.getHach();
+		HachageAbstract<Page> pages = moteur.getPages();
+	*/	
+		try (BufferedReader br = Files.newBufferedReader(Paths.get(filename), Charset.forName("ISO-8859-1")))
+		{
+			System.out.println("Chargement du fichier en cours ...");
+			
+			String sCurrentLine = br.readLine();
+			String keyWord = "";
+			ArrayList<PageOccurence> pagesOccurences = new ArrayList<PageOccurence>();
+			int nbKeyWords = 0;
+			boolean first = true;
+			while ((sCurrentLine = br.readLine()) != null) {
+				String [] splited = sCurrentLine.split("\t");
+				String url = splited[7];
+				String secondUrl = ""; 
+				String from = "";
+				if(splited.length == 10) {
+					secondUrl = splited[8];
+					from = splited[9].substring(5, splited[9].length() - 1);
+				}
+				else if(splited.length == 9){
+					if(splited[8].substring(0, 4).contains("(from")) {
+						secondUrl = "";
+						from = splited[9].substring(5, splited[9].length() - 1);
+					}
+				}
+				
+				System.out.println("Url : " + url + " | Sec : " + secondUrl + " | from : " + from);
+			}
+			System.out.println("Fichier chargé avec " + nbKeyWords + " mots clefs.");
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
 	}
 	
 	
