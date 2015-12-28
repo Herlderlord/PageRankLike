@@ -5,14 +5,17 @@ import java.util.List;
 public class MoteurDeRecherche {
 	
 	
-	
-	private HachageAbstract<ArrayList<PageOccurence>> hach;
+	private HachageAbstract<ArrayList<PageOccurence>> pagesKeywords;
+	private HachageAbstract<Page> pages;
+	//private HachageAbstract<ArrayList<PageOccurence>> hach;
 	
 	/**
 	 * 
 	 */
 	public MoteurDeRecherche() {
-		hach = new HachageDouble<ArrayList<PageOccurence>>(300000);
+		//hach = new HachageDouble<ArrayList<PageOccurence>>(300000);
+		pagesKeywords = new HachageDouble<ArrayList<PageOccurence>>(300000);
+		pages = new HachageDouble<Page>(300000);
 	}
 	
 	/**
@@ -20,7 +23,7 @@ public class MoteurDeRecherche {
 	 * @param hach
 	 */
 	public MoteurDeRecherche(HachageAbstract<ArrayList<PageOccurence>> hach) {
-		this.hach = hach;
+		this.pagesKeywords = hach;
 	}
 	
 	/**
@@ -29,7 +32,8 @@ public class MoteurDeRecherche {
 	 * @return
 	 */
 	public List<PageOccurence> search(String keyword) {
-		return hach.get(keyword);
+		//return hach.get(keyword);
+		return null;
 	}
 	
 	/**
@@ -37,6 +41,7 @@ public class MoteurDeRecherche {
 	 * @param keywords
 	 * @return
 	 */
+	/*
 	public List<PageOccurence> search(String[] keywords) {
 		
 		ArrayList<PageOccurence> pagesOccurences = new ArrayList<PageOccurence>();
@@ -74,16 +79,22 @@ public class MoteurDeRecherche {
 		return result;
 	}
 	
+	
 	public List<PageOccurence> searchEngine(String request) {
 		return null;
 	}
+	*/
 	
 	/**
 	 * 
 	 * @return
 	 */
 	public HachageAbstract<ArrayList<PageOccurence>> getHach() {
-		return hach;
+		return pagesKeywords;
+	}
+	
+	public HachageAbstract<Page> getPages() {
+		return pages;
 	}
 
 	

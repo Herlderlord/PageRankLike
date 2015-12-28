@@ -8,31 +8,31 @@
 public class PageOccurence {
 	
 	private int nbOccurence; 
-	private String url; 
+	private Page page; 
 	
 	public PageOccurence() {
 		nbOccurence = 0; 
-		url = "";
+		page = null;
 	}
 	
-	public PageOccurence(int nbOccurence, String url) {
+	public PageOccurence(int nbOccurence, Page page) {
 		this.nbOccurence = nbOccurence;
-		this.url = url;
+		this.page = page;
 	}
 	
 	public void setNbOccurence(int nbOccurence) {
 		this.nbOccurence = nbOccurence;
 	}
 	
-	public void setUrl(String url) {
-		this.url = url; 
+	public void setPage(Page page) {
+		this.page = page; 
 	}
 	public int getNbOccurence() {
 		return nbOccurence;
 	}
 	
-	public String getUrl() {
-		return url;
+	public Page getPage() {
+		return page;
 	}
 	
 	
