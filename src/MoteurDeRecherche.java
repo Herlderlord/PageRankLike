@@ -32,8 +32,7 @@ public class MoteurDeRecherche {
 	 * @return
 	 */
 	public List<PageOccurence> search(String keyword) {
-		//return hach.get(keyword);
-		return null;
+		return pagesKeywords.get(keyword);
 	}
 	
 	/**
