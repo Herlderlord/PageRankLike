@@ -97,8 +97,8 @@ public class Page {
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * Retourne la liste de pages ayant un lien vers notre page.
+	 * @return List<Page>
 	 */
 	public List<Page> getInPages() {
 		return inPages;

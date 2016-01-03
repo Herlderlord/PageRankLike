@@ -5,7 +5,7 @@
  *
  */
 
-public class PageOccurence {
+public class PageOccurence implements Comparable<PageOccurence> {
 	
 	private int nbOccurence; 
 	private Page page; 
@@ -35,5 +35,10 @@ public class PageOccurence {
 		return page;
 	}
 	
+	@Override
+	public int compareTo(PageOccurence p) {
+		System.out.println("Une comparaison");
+		return Float.compare(this.getPage().getScore(), p.getPage().getScore());	
+	}
 	
 }

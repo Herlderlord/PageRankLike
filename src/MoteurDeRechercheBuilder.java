@@ -10,10 +10,12 @@ import java.util.List;
 public class MoteurDeRechercheBuilder {
 
 	private int nbKeyWords;
+	private int nbLinks;
 	private MoteurDeRecherche moteur;
 	
 	
 	/**
+	 * Constructeur qui instancie le moteur.
 	 * 
 	 */
 	public MoteurDeRechercheBuilder() {
@@ -21,6 +23,8 @@ public class MoteurDeRechercheBuilder {
 	}
 	
 	/**
+	 * Permet de générer le moteur de recherche et toutes ses structures internes 
+	 * à partir du fichier index et du fichier new. 
 	 * 
 	 * @param indexFileName
 	 * @param newFileName
@@ -33,6 +37,7 @@ public class MoteurDeRechercheBuilder {
 	}
 	
 	/**
+	 * Génère les structures en fonction du fichier index.
 	 * 
 	 * @param filename
 	 */
@@ -80,17 +85,20 @@ public class MoteurDeRechercheBuilder {
 	}
 	
 	/**
+	 * Génère les structures de données en fonction de build new. 
 	 * 
 	 * @param filename
 	 */
 	private void buildNew(String filename) {
 		
-		HachageAbstract<Page> pages = moteur.getPages();
+		//HachageAbstract<Page> pages = moteur.getPages();
 	
 		try (BufferedReader br = Files.newBufferedReader(Paths.get(filename), Charset.forName("ISO-8859-1")))
 		{
 			
 			String sCurrentLine = br.readLine();
+			nbLinks = 0; 
+			
 			while ((sCurrentLine = br.readLine()) != null) {
 				String [] splited = sCurrentLine.split("\t");
 				String url = splited[7];
@@ -113,8 +121,11 @@ public class MoteurDeRechercheBuilder {
 						from = splited[8].substring(5, splited[8].length() - 1);
 					}
 				}
+
 				
+				// Dans le cas où l'on a un from. 
 				if(from.length() > 1) {
+					nbLinks ++;
 					
 					if(from != "" && from.charAt(0) == ' ') {
 						from = from.substring(1);
@@ -128,18 +139,34 @@ public class MoteurDeRechercheBuilder {
 						url = url.replace("http://", "");
 						url = url.replace("https://", "");
 					}
-					Page toPage = pages.get(url);
-					Page fromPage = pages.get(from + "");
+					Page toPage = moteur.getPages().get(url);
+					Page fromPage = moteur.getPages().get(from + "");
 					if(toPage == null) {
 						toPage = new Page(url);
-						pages.add(url, toPage);
+						moteur.getPages().add(url, toPage);
 					}
 					if(fromPage == null) {
+						//System.out.println("Ajout de " + from);
 						fromPage = new Page(from);
-						pages.add(from, fromPage);
+						moteur.getPages().add(from, fromPage);
 					}
 					toPage.addInPage(fromPage);
 					fromPage.addOutPage(toPage);
+				}
+				// Dans le cas où l'on n'en a pas. 
+				else {
+					if(secondUrl != "")
+						url = secondUrl;
+					else {
+						url = url.replace("http://", "");
+						url = url.replace("https://", "");
+					}
+					Page toPage = moteur.getPages().get(url);
+					if(toPage == null) {
+						toPage = new Page(url);
+						moteur.getPages().add(url, toPage);
+					}
+						
 				}
 			}
 		} catch (IOException e) {
@@ -148,6 +175,7 @@ public class MoteurDeRechercheBuilder {
 	}
 	
 	/**
+	 * Permet de récupérer la référence du moteur de recherche créé par le builder.
 	 * 
 	 * @return
 	 */
@@ -156,9 +184,21 @@ public class MoteurDeRechercheBuilder {
 	}
 	
 	/**
-	 * 
+	 * Calcule le score de manière naïve. 
 	 */
 	public void calculScores() {
+		List<Page> pages = moteur.getPages().toList();
+		
+		for(int i = 0; i < pages.size(); i++) {
+			Page p = pages.get(i);
+			p.setScore((float)p.getIndegree());
+		}
+	}
+	
+	/**
+	 * Calcule le score avec la méthode pondérée.
+	 */
+	public void calculScoresPondere() {
 		List<Page> pages = moteur.getPages().toList();
 		
 		for(int i = 0; i < pages.size(); i++) {
@@ -168,10 +208,47 @@ public class MoteurDeRechercheBuilder {
 	}
 	
 	/**
+	 * Calcule le score avec la méthode récursive. 
+	 * @deprecated Peut poser des problèmes dans le cas d'un graphe trop grand
+	 */
+	public void calculRecursif() {
+		List<Page> pages = moteur.getPages().toList();
+		
+		for(int i = 0; i < pages.size(); i++) {
+			Page p = pages.get(i);
+			p.setScore(calculRecursifPage(p)); 
+		}
+	}
+	
+	/**
+	 * 
+	 * @param p
+	 * @return
+	 */
+	public float calculRecursifPage(Page p) {
+		float score = 0;
+		List<Page> froms = p.getInPages();
+		
+		// On parcourt la liste des pages from 
+		for(int j = 0; j < froms.size(); j++) {
+			Page from = froms.get(j);
+			p.setScore(p.getScore() + (calculRecursifPage(from) / p.getOutdegree()));   
+		}
+		return score;
+	}
+	/**
 	 * 
 	 * @return
 	 */
 	public int getNbKeyWords() {
 		return nbKeyWords;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public int getNbLinks() {
+		return nbLinks;
 	}
 }

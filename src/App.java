@@ -1,3 +1,4 @@
+import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
@@ -7,8 +8,8 @@ import java.util.Scanner;
  * 	DONE - Un clef 
  *  Multi clef 
  * DONE - Améliorer l'affichage 
- * Améliorer le score
- * Faire une liste triée pour le score 
+ * DONE - 	Améliorer le score
+ * DONE - Faire une liste triée pour le score 
  */
 
 public class App {
@@ -24,8 +25,14 @@ public class App {
 		System.out.println("Calcul des scores");
 		builder.calculScores();
 		
-		// Affichage de statistiques 
-		System.out.println("Nombre de pages : " + Page.getCounter());
+		List<Page> pages = builder.getMoteurDeRecherche().getPages().toList();
+		
+		// Affichage des statistiques 
+		System.out.println("Nombre de pages " + Page.getCounter());
+		System.out.println("Nombre de liens : " + builder.getNbLinks());
+
+
+
 		
 		//String[] keywords = {"twittertwitter", "abonnersimple", "twittertwitter", "abonnersimple"};
 		//List<PageOccurence> sites = builder.getMoteurDeRecherche().search(keywords);
@@ -36,15 +43,16 @@ public class App {
 		do {
 			System.out.println("Votre recherche (/quit pour quitter) : ");
 			input = cin();
-			if(input == "\\quit") 
+			if(input.compareTo("/quit") == 0) 
 				continuProg = false;
 			else 
 				processInput(input, builder); 
 		} while(continuProg);
 		reader.close();
-		
+		System.out.println("Programme termine");
 	}
-	
+
+
 	public static void processInput(String input, MoteurDeRechercheBuilder builder) {
 		List<PageOccurence> sites = null;
 		String [] keywords = parseInput(input);
@@ -55,6 +63,8 @@ public class App {
 		else if(keywords.length > 1) {
 			// sites = builder.getMoteurDeRecherche()
 		}		
+		if(sites != null)
+			Collections.sort(sites);
 		System.out.println("Votre résultat : ");
 		displayResult(sites);
 	}

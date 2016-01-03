@@ -15,7 +15,7 @@ public class MoteurDeRecherche {
 	public MoteurDeRecherche() {
 		//hach = new HachageDouble<ArrayList<PageOccurence>>(300000);
 		pagesKeywords = new HachageDouble<ArrayList<PageOccurence>>(300000);
-		pages = new HachageDouble<Page>(300000);
+		pages = new HachageDouble<Page>(100000);
 	}
 	
 	/**
