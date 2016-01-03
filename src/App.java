@@ -1,42 +1,92 @@
 import java.util.List;
+import java.util.Scanner;
 
 
+/*TODO:
+ * Faire la demande d'entree 
+ * 	DONE - Un clef 
+ *  Multi clef 
+ * DONE - Améliorer l'affichage 
+ * Améliorer le score
+ * Faire une liste triée pour le score 
+ */
 
 public class App {
 
+	static Scanner reader = new Scanner(System.in);
+	
+	
 	public static void main(String[] args) {
-
+		// Préparation des données
 		MoteurDeRechercheBuilder builder = new MoteurDeRechercheBuilder();
 		builder.buildMoteurDeRecherche("data/index.txt", "data/new.txt");
+		// Calcul des scores 
+		System.out.println("Calcul des scores");
 		builder.calculScores();
-		String keyword = "twittertwitter";
 		
-		List<PageOccurence> sites = builder.getMoteurDeRecherche().search(keyword);
+		// Affichage de statistiques 
+		System.out.println("Nombre de pages : " + Page.getCounter());
 		
 		//String[] keywords = {"twittertwitter", "abonnersimple", "twittertwitter", "abonnersimple"};
 		//List<PageOccurence> sites = builder.getMoteurDeRecherche().search(keywords);
 
-		
-		displayResult(sites);
+		// Demande de mots clefs
+		String input = "";
+		boolean continuProg = true;
+		do {
+			System.out.println("Votre recherche (/quit pour quitter) : ");
+			input = cin();
+			if(input == "\\quit") 
+				continuProg = false;
+			else 
+				processInput(input, builder); 
+		} while(continuProg);
+		reader.close();
 		
 	}
 	
+	public static void processInput(String input, MoteurDeRechercheBuilder builder) {
+		List<PageOccurence> sites = null;
+		String [] keywords = parseInput(input);
+		System.out.println("Nb Key Words : " + keywords.length);
+		if(keywords.length == 1) {
+			sites = builder.getMoteurDeRecherche().search(keywords[0]);
+		}
+		else if(keywords.length > 1) {
+			// sites = builder.getMoteurDeRecherche()
+		}		
+		System.out.println("Votre résultat : ");
+		displayResult(sites);
+	}
+	public static String[] parseInput(String input) {
+		return input.split(" ");
+	}
+	
+	public static String cin() {
+		String c = reader.nextLine();
+		return c;
+	}
 	public static void displayResult(List<PageOccurence> sites) {
-		for(int i = 0; i < sites.size(); i++) {
-			System.out.println("Entity ["); 
+		if(sites == null) {
+			System.out.println("Aucun résultat.");
+			return;
+		}
+		for(int i = 0; i < sites.size(); i++) { 
 			Page p = sites.get(i).getPage();
-			System.out.println("Url : " + p.getUrl()); 
-			System.out.println("Indegree : " + p.getIndegree());
-			System.out.println("Outdegree : " + p.getOutdegree());
-			System.out.println("Pages in : ");
+			System.out.println("[" + p.getUrl() + "] : [");
+			System.out.println("\tUrl : " + p.getUrl()); 
+			System.out.println("\tIndegree : " + p.getIndegree());
+			System.out.println("\tOutdegree : " + p.getOutdegree());
+			System.out.println("\tScore : " + p.getScore());
+			System.out.println("\tPages in :");
 			for(int j = 0; j < p.getInPages().size(); j++) {
-				System.out.println("-- " + p.getInPages().get(j).getUrl());
+				System.out.println("\t\turl : " + p.getInPages().get(j).getUrl());
 			}
-			System.out.println("Pages ou : ");
+			System.out.println("\tPages out :");
 			for(int j = 0; j < p.getOutPages().size(); j++) {
-				System.out.println("-- " + p.getOutPages().get(j).getUrl());
+				System.out.println("\t\turl : " + p.getOutPages().get(j).getUrl());
 			}
-			System.out.println("NbOccurence : " + sites.get(i).getNbOccurence());
+			System.out.println("\tNbOccurence : " + sites.get(i).getNbOccurence());
 			System.out.println("]");
 		}	
 	}

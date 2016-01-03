@@ -12,7 +12,6 @@ public class HachageDouble<T> extends HachageLineaire<T> {
 		while(true) {
 			if(estPremier(this.clefs.size(), i)) {
 				k = i;
-				System.out.println("==> Taille : " + taille + " ==> k choisi : " + k);
 				return;
 			}
 			i ++;

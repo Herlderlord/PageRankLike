@@ -9,7 +9,7 @@ import java.util.List;
 
 public class MoteurDeRechercheBuilder {
 
-
+	private int nbKeyWords;
 	private MoteurDeRecherche moteur;
 	
 	
@@ -26,7 +26,9 @@ public class MoteurDeRechercheBuilder {
 	 * @param newFileName
 	 */
 	public void buildMoteurDeRecherche(String indexFileName, String newFileName) {
+		System.out.println("Chargement du fichier " + indexFileName + " ... ");
 		this.buildIndex(indexFileName);
+		System.out.println("Chargement du fichier " + newFileName + " ... ");
 		this.buildNew(newFileName);
 	}
 	
@@ -40,13 +42,11 @@ public class MoteurDeRechercheBuilder {
 		HachageAbstract<Page> pages = moteur.getPages();
 		
 		try (BufferedReader br = Files.newBufferedReader(Paths.get(filename), Charset.forName("ISO-8859-1")))
-		{
-			System.out.println("Chargement du fichier en cours ...");
-			
+		{			
 			String sCurrentLine;
 			String keyWord = "";
 			ArrayList<PageOccurence> pagesOccurences = new ArrayList<PageOccurence>();
-			int nbKeyWords = 0;
+			nbKeyWords = 0;
 			boolean first = true;
 			while ((sCurrentLine = br.readLine()) != null) {
 				
@@ -74,7 +74,6 @@ public class MoteurDeRechercheBuilder {
 					}
 				}
 			}
-			System.out.println("Fichier charg√© avec " + nbKeyWords + " mots clefs.");
 		} catch (IOException e) {
 			e.printStackTrace();
 		} 
@@ -85,25 +84,24 @@ public class MoteurDeRechercheBuilder {
 	 * @param filename
 	 */
 	private void buildNew(String filename) {
-		System.out.println("[BUILD NEW] En cours de construction");
 		
 		HachageAbstract<Page> pages = moteur.getPages();
 	
 		try (BufferedReader br = Files.newBufferedReader(Paths.get(filename), Charset.forName("ISO-8859-1")))
 		{
-			System.out.println("Chargement du fichier en cours ...");
 			
 			String sCurrentLine = br.readLine();
 			while ((sCurrentLine = br.readLine()) != null) {
 				String [] splited = sCurrentLine.split("\t");
 				String url = splited[7];
-				@SuppressWarnings("unused")
 				String secondUrl = ""; 
 				String from = "";
 				
 				// Dans le cas o˘ on a toutes les informations
 				if(splited.length == 10) {
 					secondUrl = splited[8];
+					if(secondUrl.length() == 0)
+						secondUrl = "";
 					from = splited[9].substring(5, splited[9].length() - 1);
 				}
 				
@@ -117,19 +115,31 @@ public class MoteurDeRechercheBuilder {
 				}
 				
 				if(from.length() > 1) {
+					
 					if(from != "" && from.charAt(0) == ' ') {
 						from = from.substring(1);
 					}
 					from = from.replace("http://", "");
 					from = from.replace("https://", "");
-					url = url.replace("http://", "");
-					url = url.replace("https://", "");
+					if(secondUrl != "") {
+						url = secondUrl.substring(2);
+					}
+					else {
+						url = url.replace("http://", "");
+						url = url.replace("https://", "");
+					}
 					Page toPage = pages.get(url);
 					Page fromPage = pages.get(from + "");
-					if(toPage != null && fromPage != null) {
-						toPage.addInPage(fromPage);
-						fromPage.addOutPage(toPage);
+					if(toPage == null) {
+						toPage = new Page(url);
+						pages.add(url, toPage);
 					}
+					if(fromPage == null) {
+						fromPage = new Page(from);
+						pages.add(from, fromPage);
+					}
+					toPage.addInPage(fromPage);
+					fromPage.addOutPage(toPage);
 				}
 			}
 		} catch (IOException e) {
@@ -155,5 +165,13 @@ public class MoteurDeRechercheBuilder {
 			Page p = pages.get(i);
 			p.setScore((float)p.getIndegree() / (float)p.getOutdegree());
 		}
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public int getNbKeyWords() {
+		return nbKeyWords;
 	}
 }
