@@ -16,7 +16,10 @@ public class App {
 
 	static Scanner reader = new Scanner(System.in);
 	
-	
+	/**
+	 * Classe principale du programme. 
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		// Préparation des données
 		MoteurDeRechercheBuilder builder = new MoteurDeRechercheBuilder();
@@ -52,7 +55,13 @@ public class App {
 		System.out.println("Programme termine");
 	}
 
-
+	/**
+	 * Permet de gérer l'input en faisant un parse et 
+	 * d'appeler les bonnes méthodes en conséquence
+	 * 
+	 * @param input
+	 * @param builder
+	 */
 	public static void processInput(String input, MoteurDeRechercheBuilder builder) {
 		List<PageOccurence> sites = null;
 		String [] keywords = parseInput(input);
@@ -61,21 +70,39 @@ public class App {
 			sites = builder.getMoteurDeRecherche().search(keywords[0]);
 		}
 		else if(keywords.length > 1) {
-			// sites = builder.getMoteurDeRecherche()
+			sites = builder.getMoteurDeRecherche().search(keywords);
 		}		
 		if(sites != null)
 			Collections.sort(sites);
 		System.out.println("Votre résultat : ");
 		displayResult(sites);
 	}
+	
+	/**
+	 * Méthode qui permet de parse l'input. Elle a été gérée dans une autre méthode 
+	 * au cas où l'on voudrait l'améliorer. 
+	 * 
+	 * @param input
+	 * @return
+	 */
 	public static String[] parseInput(String input) {
 		return input.split(" ");
 	}
 	
+	/**
+	 * Permet de récupérer une ligne que l'utilisateur entre dans la console.
+	 * 
+	 * @return
+	 */
 	public static String cin() {
-		String c = reader.nextLine();
-		return c;
+		return reader.nextLine();
 	}
+	
+	/**
+	 * Afficher le résultat de la recherche. 
+	 * 
+	 * @param sites
+	 */
 	public static void displayResult(List<PageOccurence> sites) {
 		if(sites == null) {
 			System.out.println("Aucun résultat.");
@@ -83,21 +110,7 @@ public class App {
 		}
 		for(int i = 0; i < sites.size(); i++) { 
 			Page p = sites.get(i).getPage();
-			System.out.println("[" + p.getUrl() + "] : [");
-			System.out.println("\tUrl : " + p.getUrl()); 
-			System.out.println("\tIndegree : " + p.getIndegree());
-			System.out.println("\tOutdegree : " + p.getOutdegree());
-			System.out.println("\tScore : " + p.getScore());
-			System.out.println("\tPages in :");
-			for(int j = 0; j < p.getInPages().size(); j++) {
-				System.out.println("\t\turl : " + p.getInPages().get(j).getUrl());
-			}
-			System.out.println("\tPages out :");
-			for(int j = 0; j < p.getOutPages().size(); j++) {
-				System.out.println("\t\turl : " + p.getOutPages().get(j).getUrl());
-			}
-			System.out.println("\tNbOccurence : " + sites.get(i).getNbOccurence());
-			System.out.println("]");
+			System.out.println("[ " + p.getUrl() + ", " + p.getScore() + " ]");
 		}	
 	}
 }

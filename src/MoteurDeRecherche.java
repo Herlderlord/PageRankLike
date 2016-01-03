@@ -40,49 +40,38 @@ public class MoteurDeRecherche {
 	 * @param keywords
 	 * @return
 	 */
-	/*
+	
 	public List<PageOccurence> search(String[] keywords) {
 		
-		ArrayList<PageOccurence> pagesOccurences = new ArrayList<PageOccurence>();
-		
-		HachageDouble<PageOccurence> hachageCounter = new HachageDouble<PageOccurence>(300000);
-		
 		// Résultat final. 
-		List<PageOccurence> result = new ArrayList<PageOccurence>();
+		// Cette fois-ci on recherche avec plusieurs mots clefs. 
+		// On va parcourir chaque clef. 
 		
-		// On parcourt les mots clefs que l'utilisateur a donné.
+		HachageAbstract<PageOccurence> pages = new HachageDouble<PageOccurence>(100000);
 		for(int i = 0; i < keywords.length; i++) {
-			pagesOccurences = hach.get(keywords[i]); 
-			
-			// On vérifie si on a des occurences avec le mot clef 
-			if(pagesOccurences != null) {
-				// Ajout des occurences dans un hachage pour compter.
-				for(int j = 0; j < pagesOccurences.size(); j++) {
-					PageOccurence p = hachageCounter.get(pagesOccurences.get(j).getUrl());	
-					// Addition des scores
-					if(p != null) {
-						p.setNbOccurence(p.getNbOccurence() + pagesOccurences.get(j).getNbOccurence());
+			List<PageOccurence> pageOccurences = pagesKeywords.get(keywords[i]);
+			if(pageOccurences != null) {
+				for(int j = 0; j < pageOccurences.size(); j++) {
+					PageOccurence p = pages.get(pageOccurences.get(j).getPage().getUrl());
+					if(p == null) {
+						pages.add(
+								pageOccurences.get(j).getPage().getUrl(), 
+								new PageOccurence(
+										pageOccurences.get(j).getNbOccurence(), 
+										pageOccurences.get(j).getPage()
+										)
+								);
 					}
-					// Ajout de la page 
 					else {
-						hachageCounter.add(pagesOccurences.get(j).getUrl(), new PageOccurence(pagesOccurences.get(j).getNbOccurence(), pagesOccurences.get(j).getUrl()));
-						result.add(hachageCounter.get(pagesOccurences.get(j).getUrl()));
+						p.setNbOccurence( p.getNbOccurence() + pageOccurences.get(j).getNbOccurence());
 					}
 				}
 			}
-
-			
 		}
-		
-		// Et on fait l'union des deux. 
-		return result;
+
+		return pages.toList();
 	}
 	
-	
-	public List<PageOccurence> searchEngine(String request) {
-		return null;
-	}
-	*/
 	
 	/**
 	 * 
