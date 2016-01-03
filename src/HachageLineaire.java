@@ -90,7 +90,7 @@ public class HachageLineaire<T> extends HachageAbstract<T>{
 				return valeurs.get(clefHachee);
 			}
 			else {
-				clefHachee ++;
+				clefHachee = this.getNextHash(clefHachee);
 			}
 		}
 		this.nbComparaisonsNotFound += localComparaisons;
@@ -131,6 +131,10 @@ public class HachageLineaire<T> extends HachageAbstract<T>{
 			}
 			System.out.println("]");
 		}
+	}
+	
+	public int getNbValues() {
+		return nbValues;
 	}
 	
 	@Override
